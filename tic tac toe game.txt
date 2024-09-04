@@ -1,0 +1,71 @@
+# Tic-Tac-Toe game in Python
+
+def print_board(board):
+    """Print the current board state."""
+    for row in board:
+        print(" | ".join(row))
+        print("-" * 5)
+
+def check_winner(board, player):
+    """Check if the current player has won."""
+    # Check rows
+    for row in board:
+        if all(s == player for s in row):
+            return True
+    
+    # Check columns
+    for col in range(3):
+        if all(board[row][col] == player for row in range(3)):
+            return True
+    
+    # Check diagonals
+    if all(board[i][i] == player for i in range(3)):
+        return True
+    if all(board[i][2 - i] == player for i in range(3)):
+        return True
+    
+    return False
+
+def is_board_full(board):
+    """Check if the board is full (i.e., no empty spaces)."""
+    return all(cell != " " for row in board for cell in row)
+
+def main():
+    board = [[" " for _ in range(3)] for _ in range(3)]
+    players = ["X", "O"]
+    turn = 0
+
+    while True:
+        print_board(board)
+        current_player = players[turn % 2]
+        print(f"Player {current_player}'s turn")
+
+        try:
+            row = int(input("Enter row (0, 1, 2): "))
+            col = int(input("Enter column (0, 1, 2): "))
+            if not (0 <= row < 3 and 0 <= col < 3):
+                raise ValueError("Invalid index")
+        except ValueError as e:
+            print(f"Invalid input: {e}")
+            continue
+        
+        if board[row][col] != " ":
+            print("Cell already taken. Choose another one.")
+            continue
+        
+        board[row][col] = current_player
+        
+        if check_winner(board, current_player):
+            print_board(board)
+            print(f"Player {current_player} wins!")
+            break
+        
+        if is_board_full(board):
+            print_board(board)
+            print("It's a tie!")
+            break
+        
+        turn += 1
+
+if _name_ == "_main_":
+    main()
